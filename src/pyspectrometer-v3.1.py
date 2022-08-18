@@ -271,7 +271,7 @@ class App:
 		self.window.after(self.delay, self.update)
 
 
-	def get_data_test(self):
+	def get_data(self):
 		data = {}
 		data_json = {}
 
@@ -305,16 +305,14 @@ class App:
 			cv2.imwrite("spectrum-" + now + ".jpg", cv2.cvtColor(graphdata[0], cv2.COLOR_RGB2BGR))
 			# print(graphdata[1]) #wavelengths
 			# print(graphdata[2]) #intensities
-			vals = "["
+			vals = "[ "
 			for x in zip(graphdata[1], graphdata[2]):
-				vals = vals + '[' + str(x[0]) + ',' + str(x[1]) + ']'
-			vals =  vals + "]"
+				vals = vals + '[ ' + str(x[0]) + ', ' + str(x[1]) + '], '
+			vals =  vals[:-2] + " ]"
 			data['data_array'] = vals
 
 		data_json = json.dumps(data)
 		return data_json
-
-
 
 
 class MyVideoCapture:
@@ -594,7 +592,7 @@ class Server:
 				print(f"[RECV CMD] Receiving command : " + cmd)
 
 				if (cmd == 'GET_DATA'):
-					conn.sendall(ptr.get_data_test().encode(FORMAT))
+					conn.sendall(ptr.get_data().encode(FORMAT))
 				conn.close()
 				print(f"[DISCONNECTED] {addr} disconnected.")
 
