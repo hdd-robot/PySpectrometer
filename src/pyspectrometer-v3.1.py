@@ -281,36 +281,52 @@ class App:
 		if ret1:
 
 			filename = "specter.png"
-			cv2.imwrite(filename, image_frame)
-			f = open(filename, 'rb')
-			img_data = f.read()
-			f.close()
-			img_data = base64.b64encode(img_data).decode('utf-8')
-			data['image_specter'] = img_data
+			try:
+				cv2.imwrite(filename, image_frame)
+
+				f = open(filename, 'rb')
+				img_data = f.read()
+				f.close()
+				img_data = base64.b64encode(img_data).decode('utf-8')
+				data['image_specter'] = img_data
+			except Exception as e :
+				print(e)
+				return  False
 
 
 		if ret2:
 			filename = "graph.png"
-			cv2.imwrite(filename, cv2.cvtColor(graphdata[0], cv2.COLOR_RGB2BGR))
-			f = open(filename, 'rb')
-			img_data = f.read()
-			f.close()
-			img_data = base64.b64encode(img_data).decode('utf-8')
-			data['image_graphe'] = img_data
+			try:
+				cv2.imwrite(filename, cv2.cvtColor(graphdata[0], cv2.COLOR_RGB2BGR))
+				f = open(filename, 'rb')
+				img_data = f.read()
+				f.close()
+				img_data = base64.b64encode(img_data).decode('utf-8')
+				data['image_graphe'] = img_data
+			except Exception as e :
+				print(e)
+				return  False
 
 
 		ret3, graphdata = self.vid.get_graph()
+
 		if ret3:
 			now = time.strftime("%d-%m-%Y-%H:%M:%S")
-			cv2.imwrite("spectrum-" + now + ".jpg", cv2.cvtColor(graphdata[0], cv2.COLOR_RGB2BGR))
-			# print(graphdata[1]) #wavelengths
-			# print(graphdata[2]) #intensities
-			vals = "[ "
-			for x in zip(graphdata[1], graphdata[2]):
-				vals = vals + '[ ' + str(x[0]) + ', ' + str(x[1]) + '], '
-			vals =  vals[:-2] + " ]"
-			data['data_array'] = vals
+			try:
+				cv2.imwrite("spectrum-" + now + ".jpg", cv2.cvtColor(graphdata[0], cv2.COLOR_RGB2BGR))
+				# print(graphdata[1]) #wavelengths
+				# print(graphdata[2]) #intensities
+				vals = "[ "
+				for x in zip(graphdata[1], graphdata[2]):
+					vals = vals + '[ ' + str(x[0]) + ', ' + str(x[1]) + '], '
+				vals =  vals[:-2] + " ]"
+				data['data_array'] = vals
+			except Exception as e :
+				print(e)
+				return  False
 
+		if ret1 is False or ret2 is False or ret3 is False :
+			return False
 		data_json = json.dumps(data)
 		return data_json
 
@@ -592,7 +608,11 @@ class Server:
 				print(f"[RECV CMD] Receiving command : " + cmd)
 
 				if (cmd == 'GET_DATA'):
-					conn.sendall(ptr.get_data().encode(FORMAT))
+					gdata = ptr.get_data()
+					if (gdata is False):
+						conn.sendall(''.encode(FORMAT))
+					else:
+						conn.sendall(gdata.encode(FORMAT))
 				conn.close()
 				print(f"[DISCONNECTED] {addr} disconnected.")
 
