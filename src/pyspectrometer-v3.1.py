@@ -311,11 +311,7 @@ class App:
 		ret3, graphdata = self.vid.get_graph()
 
 		if ret3:
-			now = time.strftime("%d-%m-%Y-%H:%M:%S")
 			try:
-				cv2.imwrite("spectrum-" + now + ".jpg", cv2.cvtColor(graphdata[0], cv2.COLOR_RGB2BGR))
-				# print(graphdata[1]) #wavelengths
-				# print(graphdata[2]) #intensities
 				vals = "[ "
 				for x in zip(graphdata[1], graphdata[2]):
 					vals = vals + '[ ' + str(x[0]) + ', ' + str(x[1]) + '], '
@@ -400,7 +396,7 @@ class MyVideoCapture:
 			if ret:
 				# Return a boolean success flag and the current frame converted to BGR
 				frame = cv2.resize(frame, (320, 240)) #resize the live image
-				return (ret, cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+				return (ret, frame)
 			else:
 				return (ret, None)
 		else:
