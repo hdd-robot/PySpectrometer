@@ -586,6 +586,7 @@ class Server:
 	def __init__(self, ptr, port=5566):
 		print("Start server")
 		IP = socket.gethostbyname(socket.gethostname())
+		IP = "0.0.0.0" 
 		self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		ADDR = (IP, port)
 		FORMAT = "utf-8"
