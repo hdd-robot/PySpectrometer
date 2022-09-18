@@ -364,6 +364,7 @@ class MyVideoCapture:
 		'''
 		self.vid.set(cv2.CAP_PROP_FRAME_WIDTH,640)
 		self.vid.set(cv2.CAP_PROP_FRAME_HEIGHT,480)
+		self.vid.set(cv2.CAP_PROP_BRIGHTNESS, 200)
 		self.vid.set(cv2.CAP_PROP_FPS, 25)
 
 		if not self.vid.isOpened():
